@@ -1,5 +1,8 @@
 package com.example.api.service.impl;
 
+import com.example.api.mapper.CommodityMapper;
+import com.example.api.mapper.InventoryMapper;
+import com.example.api.mapper.InventoryRecordMapper;
 import com.example.api.model.entity.Commodity;
 import com.example.api.model.entity.Inventory;
 import com.example.api.model.entity.InventoryRecord;
@@ -10,6 +13,7 @@ import com.example.api.repository.InventoryRepository;
 import com.example.api.service.InventoryRecordService;
 import com.example.api.utils.DataTimeUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -25,6 +29,15 @@ public class InventoryRecordServiceImpl implements InventoryRecordService {
 
     @Resource
     private InventoryRecordRepository recordRepository;
+
+    @Resource
+    private CommodityMapper commodityMapper;
+
+    @Resource
+    private InventoryMapper inventoryMapper;
+
+    @Resource
+    private InventoryRecordMapper inventoryRecordMapper;
 
     @Override
     public List<CommodityChartVo> analyzeCommodity(Integer type) {
@@ -80,32 +93,37 @@ public class InventoryRecordServiceImpl implements InventoryRecordService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public InventoryRecord in(InventoryRecord record) throws Exception {
-        Optional<Commodity> optional = commodityRepository.findById(record.getCid());
-        if (optional.isEmpty()) {
+
+        //入库数量必须为正，否则会把库存改小甚至改负
+        if (record.getCount() == null || record.getCount() <= 0) {
+            throw new Exception("入库数量必须大于0");
+        }
+
+        Date now = new Date();
+
+        //1) 原子自增商品总库存；受影响行数为 0 说明商品不存在
+        //   加锁顺序 商品 -> 仓库，与 out() 保持一致，避免死锁
+        if (commodityMapper.addCount(record.getCid(), record.getCount(), now) == 0) {
             throw new Exception("不存在的商品id");
         }
-        Commodity commodity = optional.get();
-        record.setCreateAt(new Date());
-        commodity.setCount(commodity.getCount() + record.getCount());
-        commodityRepository.save(optional.get());
 
-        //查找当前商品在该仓库的库存
-        Inventory inventory = inventoryRepository.findByWidAndCid(record.getWid(), record.getCid());
-        //查询结果为空
-        if (inventory == null) {
-            //新建该商品库存信息
-            inventory = new Inventory();
-            inventory.setCid(record.getCid());
-            inventory.setWid(record.getWid());
-            inventory.setCount(0);
-            inventory.setName(record.getName());
+        //2) 原子自增仓库库存，该仓库无此商品时自动插入
+        //   upsert 依赖 inventory 表 (wid, cid) 唯一键
+        inventoryMapper.upsertIncrease(
+                UUID.randomUUID().toString().replace("-", ""),
+                record.getWid(), record.getCid(), record.getName(), record.getCount());
+
+        //3) 写流水
+        if (record.getId() == null || record.getId().isEmpty()) {
+            record.setId(UUID.randomUUID().toString().replace("-", ""));
         }
-        inventory.setCount(inventory.getCount() + record.getCount());
-        inventoryRepository.save(inventory);
-        record.setType(+1);
-        record.setCreateAt(new Date());
-        return recordRepository.save(record);
+        record.setType(1);
+        record.setCreateAt(now);
+        inventoryRecordMapper.insert(record);
+
+        return record;
     }
 
 }

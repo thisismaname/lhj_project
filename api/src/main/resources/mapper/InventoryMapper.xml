@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.api.mapper.InventoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.api.model.entity.Inventory">
+        <id     property="id"       column="id"/>
+        <result property="wid"      column="wid"/>
+        <result property="cid"      column="cid"/>
+        <result property="name"     column="name"/>
+        <result property="location" column="location"/>
+        <result property="count"    column="`count`"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, wid, cid, name, location, `count`
+    </sql>
+
+    <select id="findByWidAndCid" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM inventory
+        WHERE wid = #{wid} AND cid = #{cid}
+    </select>
+
+    <!--
+      仓库无此商品则插入，已有则原子累加。
+      依赖 inventory 表上的 (wid, cid) 唯一键，需手工执行 DDL：
+        ALTER TABLE inventory ADD UNIQUE KEY uk_inventory_wid_cid (wid, cid);
+      这里刻意不用 MySQL 8.0.20+ 已废弃的 VALUES() 写法。
+    -->
+    <insert id="upsertIncrease">
+        INSERT INTO inventory (id, wid, cid, name, `count`)
+        VALUES (#{id}, #{wid}, #{cid}, #{name}, #{delta})
+        ON DUPLICATE KEY UPDATE `count` = `count` + #{delta}
+    </insert>
+
+</mapper>

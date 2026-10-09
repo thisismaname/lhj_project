@@ -7,7 +7,6 @@ import router from '../router/index'
 const service = request.create({
     baseURL: 'http://localhost:8081/api',
     timeout: 50000,
-    headers: {'Authorization': token}
 });
 
 // 2. 请求拦截器：每次请求前动态获取最新 Token

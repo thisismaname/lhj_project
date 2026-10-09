@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.api.mapper.CommodityMapper">
+
+    <!--
+      表名 commodity、列名 create_at / update_at 与 Hibernate 现有命名保持一致，
+      因此无需改表、无需迁移数据。
+    -->
+    <resultMap id="BaseResultMap" type="com.example.api.model.entity.Commodity">
+        <id     property="id"          column="id"/>
+        <result property="name"        column="name"/>
+        <result property="price"       column="price"/>
+        <result property="description" column="description"/>
+        <result property="count"       column="`count`"/>
+        <result property="createAt"    column="create_at"/>
+        <result property="updateAt"    column="update_at"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, name, price, description, `count`, create_at, update_at
+    </sql>
+
+    <insert id="insert" parameterType="com.example.api.model.entity.Commodity">
+        INSERT INTO commodity (id, name, price, description, `count`, create_at, update_at)
+        VALUES (#{id}, #{name}, #{price}, #{description}, #{count}, #{createAt}, #{updateAt})
+    </insert>
+
+    <update id="update" parameterType="com.example.api.model.entity.Commodity">
+        UPDATE commodity
+        SET name        = #{name},
+            price       = #{price},
+            description = #{description},
+            `count`     = #{count},
+            update_at   = #{updateAt}
+        WHERE id = #{id}
+    </update>
+
+    <!--
+      原子自增商品总库存：SET `count` = `count` + n 由数据库在当前读下执行并持行锁，
+      不会出现「读到旧值再整体覆盖」导致的并发丢失更新。
+    -->
+    <update id="addCount">
+        UPDATE commodity
+        SET `count`   = `count` + #{delta},
+            update_at = #{now}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM commodity WHERE id = #{id}
+    </delete>
+
+    <select id="findById" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM commodity WHERE id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM commodity
+    </select>
+
+    <select id="findByName" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM commodity WHERE name = #{name}
+    </select>
+
+    <select id="findByNameLike" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM commodity WHERE name LIKE #{name}
+    </select>
+
+</mapper>

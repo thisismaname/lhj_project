@@ -13,11 +13,4 @@ public interface CommodityRepository extends JpaRepository<Commodity, String> {
     Commodity findByName(String name);
 
     List<Commodity> findByNameLike(String name);
-
-    /**
-     * 删除留言
-     * @param id
-     */
-    void deleteMessageBoardInfo(String id);
-
 }
