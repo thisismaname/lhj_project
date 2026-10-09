@@ -10,6 +10,7 @@ import com.example.api.utils.JwtTokenUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,7 +25,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Admin save(Admin admin) throws Exception {
         if (admin.getEmail().length() < 8 || admin.getPassword().length() < 5) throw new Exception("请求参数异常");
-        admin.setCreateAt(DataTimeUtil.getNowTimeString());
+        admin.setCreateAt(new Date());
         return adminRepository.save(admin);
     }
 

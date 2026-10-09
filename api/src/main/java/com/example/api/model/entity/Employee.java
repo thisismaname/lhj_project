@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * 员工
@@ -36,8 +37,8 @@ public class Employee {
     //部门
     private String department;
 
-    private String createAt;
+    private Date createAt;
 
-    private String updateAt;
+    private Date updateAt;
 
 }

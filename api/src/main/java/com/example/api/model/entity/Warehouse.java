@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * 仓库
@@ -27,6 +28,6 @@ public class Warehouse {
     //仓库负责人
     private String principle;
 
-    private String createAt;
+    private Date createAt;
 
 }

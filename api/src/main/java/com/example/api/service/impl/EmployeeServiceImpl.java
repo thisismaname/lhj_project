@@ -7,6 +7,7 @@ import com.example.api.utils.DataTimeUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -17,13 +18,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee save(Employee employee) {
-        employee.setCreateAt(DataTimeUtil.getNowTimeString());
+        employee.setCreateAt(new Date());
+        employee.setUpdateAt(new Date());
         return employeeRepository.save(employee);
     }
 
     @Override
     public void update(Employee employee) {
-        employee.setUpdateAt(DataTimeUtil.getNowTimeString());
         employeeRepository.save(employee);
     }
 

@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ public class AdminController {
     public Admin init(@RequestBody Admin admin) throws Exception {
         if (adminRepository.existsAdminByRoles(Role.ROLE_SUPER_ADMIN.getValue())) throw new Exception("初始化请求错误");
         admin.setRoles(Role.ROLE_SUPER_ADMIN.getValue());
+        admin.setCreateAt(new Date());
         return adminService.save(admin);
     }
 
@@ -69,5 +71,4 @@ public class AdminController {
     public void sendEmail(String email) throws Exception {
         adminService.sendEmail(email);
     }
-
 }

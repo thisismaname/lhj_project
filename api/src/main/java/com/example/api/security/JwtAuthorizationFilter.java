@@ -30,35 +30,30 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-
-        //从Request Header 取出Token
+        // 从Request Header 取出Token
         String token = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
-
-        //Token为空放行
-        //如果接下来进入的URL不是公共的地址SpringSecurity会返回403的错误
+        // Token为空放行
+        // 如果接下来进入的URL不是公共的地址SpringSecurity会返回403的错误
         if (!JwtTokenUtil.checkToken(token)){
-            chain.doFilter(request, response);
+//            chain.doFilter(request, response);
             return;
         }
-
-        //判断JWT Token是否过期
+        // 判断JWT Token是否过期
         if (JwtTokenUtil.isExpiration(token)) {
             ResponseUtil.writeJson(response, new ResponseResult<>(403, "令牌已过期, 请重新登录"));
             return;
         }
-
-        //解析token
+        // 解析token
         String username = JwtTokenUtil.getUsername(token);
         List<String> tokenRoles = JwtTokenUtil.getTokenRoles(token);
         ArrayList<SimpleGrantedAuthority> roles = new ArrayList<>();
         for (String role : tokenRoles) {
             roles.add(new SimpleGrantedAuthority(role));
         }
-        //向SpringSecurity的Context中加入认证信息
+        // 向SpringSecurity的Context中加入认证信息
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(username,null, roles));
 
         super.doFilterInternal(request, response, chain);
     }
-
 }

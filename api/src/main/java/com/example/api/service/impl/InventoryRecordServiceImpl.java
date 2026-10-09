@@ -69,13 +69,13 @@ public class InventoryRecordServiceImpl implements InventoryRecordService {
             throw new Exception("不存在的商品id");
         }
         Commodity commodity = optional.get();
+        commodity.setUpdateAt(new Date());
         commodity.setCount(commodity.getCount() - record.getCount());
         commodityRepository.save(optional.get());
         inventory.setCount(inventory.getCount() - record.getCount());
-
         inventoryRepository.save(inventory);
-        record.setCreateAt(DataTimeUtil.getNowTimeString());
         record.setType(-1);
+        record.setCreateAt(new Date());
         return recordRepository.save(record);
     }
 
@@ -86,6 +86,7 @@ public class InventoryRecordServiceImpl implements InventoryRecordService {
             throw new Exception("不存在的商品id");
         }
         Commodity commodity = optional.get();
+        record.setCreateAt(new Date());
         commodity.setCount(commodity.getCount() + record.getCount());
         commodityRepository.save(optional.get());
 
@@ -102,8 +103,8 @@ public class InventoryRecordServiceImpl implements InventoryRecordService {
         }
         inventory.setCount(inventory.getCount() + record.getCount());
         inventoryRepository.save(inventory);
-        record.setCreateAt(DataTimeUtil.getNowTimeString());
         record.setType(+1);
+        record.setCreateAt(new Date());
         return recordRepository.save(record);
     }
 

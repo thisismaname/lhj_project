@@ -56,7 +56,7 @@
       <a-button :loading="submitLoading" class="submit-btn" type="primary" @click="submitLogin">
         确认登陆
       </a-button>
-      <div class="des">物流管理系统 - Copyright 2021 高元明</div>
+      <div class="des">物流管理系统 - Copyright 刘浩杰</div>
     </div>
   </div>
 </template>

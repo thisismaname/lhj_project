@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * 库存记录 出库 入库
@@ -38,6 +39,6 @@ public class InventoryRecord {
     //描述信息
     private String description;
 
-    private String createAt;
+    private Date createAt;
 
 }

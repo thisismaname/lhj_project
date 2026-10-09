@@ -5,6 +5,7 @@ import com.example.api.service.DriverService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -16,6 +17,8 @@ public class DriverController {
 
     @PostMapping("")
     public Driver save(@RequestBody Driver driver) {
+        driver.setCreateAt(new Date());
+        driver.setCreateAt(new Date());
         return driverService.save(driver);
     }
 

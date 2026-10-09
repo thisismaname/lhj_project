@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * 车辆
@@ -30,6 +31,6 @@ public class Vehicle {
     //是否正在运输
     private boolean driving;
 
-    private String createAt;
+    private Date createAt;
 
 }

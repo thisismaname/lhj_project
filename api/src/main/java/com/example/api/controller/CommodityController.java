@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -18,6 +19,8 @@ public class CommodityController {
 
     @PostMapping("")
     public Commodity save(@RequestBody Commodity commodity) {
+        commodity.setUpdateAt(new Date());
+        commodity.setCreateAt(new Date());
         return commodityService.save(commodity);
     }
 

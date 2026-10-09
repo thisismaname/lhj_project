@@ -7,6 +7,7 @@ import com.example.api.utils.DataTimeUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -17,13 +18,13 @@ public class CommodityServiceImpl implements CommodityService {
 
     @Override
     public Commodity save(Commodity commodity) {
-        commodity.setCreateAt(DataTimeUtil.getNowTimeString());
+        commodity.setCreateAt(new Date());
+        commodity.setUpdateAt(new Date());
         return commodityRepository.save(commodity);
     }
 
     @Override
     public void update(Commodity commodity) {
-        commodity.setUpdateAt(DataTimeUtil.getNowTimeString());
         commodityRepository.save(commodity);
     }
 

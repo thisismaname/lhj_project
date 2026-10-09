@@ -7,6 +7,7 @@ import com.example.api.utils.DataTimeUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -17,7 +18,7 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public Sale save(Sale sale) {
-        sale.setCreateAt(DataTimeUtil.getNowTimeString());
+        sale.setCreateAt(new Date());
         return saleRepository.save(sale);
     }
 

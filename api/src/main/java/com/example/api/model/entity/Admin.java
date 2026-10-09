@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * 管理员
@@ -27,6 +28,6 @@ public class Admin {
 
     private String roles;
 
-    private String createAt;
+    private Date createAt;
 
 }

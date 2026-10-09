@@ -7,6 +7,7 @@ import com.example.api.service.DistributionService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ public class DistributionController {
 
     @PostMapping("")
     public Distribution save(@RequestBody Distribution distribution) throws Exception {
+        distribution.setTime(new Date());
         return distributionService.save(distribution);
     }
 

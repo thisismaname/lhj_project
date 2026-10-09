@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * 商品
@@ -29,8 +30,8 @@ public class Commodity {
 
     private int count;
 
-    private String createAt;
+    private Date createAt;
 
-    private String updateAt;
+    private Date updateAt;
 
 }
