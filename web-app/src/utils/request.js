@@ -18,7 +18,7 @@ service.interceptors.request.use(
         if (token) {
             // 标准格式：Bearer <token>
             // 注意：确保 key 是 'Authorization' (大小写敏感，通常首字母大写)
-            config.headers['Authorization'] = `{token}`;
+            config.headers['Authorization'] = `${token}`;
         }
 
         return config;

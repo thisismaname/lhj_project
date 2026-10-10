@@ -35,7 +35,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         // Token为空放行
         // 如果接下来进入的URL不是公共的地址SpringSecurity会返回403的错误
         if (!JwtTokenUtil.checkToken(token)){
-//            chain.doFilter(request, response);
+            chain.doFilter(request, response);
             return;
         }
         // 判断JWT Token是否过期
